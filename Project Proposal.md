@@ -27,7 +27,6 @@ proposed system.
 Classical architecture use a central message broker that routes all the messages
 transmitted within the system. This has a few downsides.
 
-
 ## Central point of failure
 The broker as the main hub is a central point of failure. If the broker is not
 available all the connected peers can not exchange information anymore.
@@ -67,14 +66,18 @@ latency. However growing any further than this is not feasible for most systems
 	- QoS - correctness: Compare to GNS p2p dns update records
 	- QoS - timeliness: Find comparable protocol (on  p2p)
 	- Properties of Messaging Protocols
-
-	Some links:
+	**Some links:**
 	- http://blogs.vmware.com/vfabric/2013/02/choosing-your-messaging-protocol-amqp-mqtt-or-stomp.html
-	- http://www.prismtech.com/opensplice/resources/white-papers
+	- http://www.prismtech.com/opensplice/resources/white-papers NOT WORKING
 	- http://mqtt.org/
 	- http://www.eejournal.com/archives/articles/20140324-rti/
 -->
 
+- [A Pragmatic survey of existing Messaging Protocols](http://blogs.vmware.com/vfabric/2013/02/choosing-your-messaging-protocol-amqp-mqtt-or-stomp.html) sheds light on the (dis-)advatages on curruntly used centralized Protocols
+- [Messagig Protocol Comparison Wihte Paper](http://www.prismtech.com/download-documents/1408) carries out the survey even ferther
+- Establishing a tustable "truth" an a ppeer to peer environment is described in the [Bit Coin Paper](http://grothoff.org/christian/teaching/2014/2194/bitcoin.pdf)
+- Ensuring Information is correct and non-expired is addressed in [GNS](https://gnunet.org/book/export/html/1802)
+- [Timely & Relibale Delivery](http://www.discover.uottawa.ca/publications/files/HDSP-FuturePlay05.pdf) in P2P networks
 
 # Plan
 <!--
@@ -84,3 +87,22 @@ latency. However growing any further than this is not feasible for most systems
 	- Find solved sub-problems and transfer solution to our domain
 	- Start Coding after there is a tight plan of the software to be build
 -->
+
+Deliverables:
+
+1. Software architecture/API Design
+2. Status Report
+3. Working Prototype
+4. Documentiation (Presenitation & Term paper)
+
+More detailed (feature centric) milestones will be defined in deliverable 1
+
+Timeline:
+
+- CW 19-20: Analyse existing (centralized) Messoging Protocals & Define scope of desired P2P protocol 
+- CW 21-22: Reasearch existing Solutions to sub problems & Wodel/Design SW architecture. (Deliverable 1)
+- CW 23: Coding Kick Off
+- CW 24: Stasatus Report (Deliverable 2)
+- CW 25 - 28: Development (Deliverable 3)
+- CW 29: Final Presentation & Documentation (Deliverable 4)
+
