@@ -45,6 +45,7 @@ if [[ $1 != "--no-apt" ]]; then
 
 	# First som utils we will need later on
 	sudo apt-get install --yes adduser
+	sudo apt-get install --yes subversion
 
 	# Now install the dependancies
 	sudo apt-get install --yes gcc
