@@ -15,7 +15,23 @@ like e.g.
 - decoupling of data-producers and consumers
 
 without sacrificing the security, scalability or distributed nature of the
-proposed system.
+proposed system. Especially we plan to have the following features:
+
+1. **Decentralized Communication**: For reliable operation the system must be
+   able to work even if certain peers or infrastructure fail. Especially there
+   will be no single point of failure.
+2. **Delayed delivery**: Messages for unreachable peers should be retained by
+   the protocol and delivered to the peer as soon as he comes online.
+3. **Guaranteed delivery**: Together with delayed messages the systems needs to
+   have Quality of Service where certain important messages can be reliably
+   delivered. So that it knows that the data was processed by the system and
+   will be delivered to the connected peers. Optionally the sender should get
+   some confirmation that his message was received by all subscribed peers.
+4. **Message ordering**: It will be important to ensure that peers know what
+   the recent data is so that they are not following outdated commands or
+   readings. However with IP networks it is not guaranteed that the packets
+   arrive in the correct order so the protocol has to synchronize and order
+   them.
 
 
 # Motivation
@@ -73,9 +89,18 @@ latency. However growing any further than this is not feasible for most systems
 	- http://www.eejournal.com/archives/articles/20140324-rti/
 -->
 
+Related work is split in two groups. The first group studies classical
+centralized message protocols like AMQP and MQTT
+
+- [MQTT v3.1 specification](http://www.ibm.com/developerworks/webservices/library/ws-mqtt/index.html)
+- [AMQP 1.0 Specification](http://docs.oasis-open.org/amqp/core/v1.0/amqp-core-complete-v1.0.pdf)
 - [A Pragmatic survey of existing Messaging Protocols](http://blogs.vmware.com/vfabric/2013/02/choosing-your-messaging-protocol-amqp-mqtt-or-stomp.html) sheds light on the (dis-)advatages on curruntly used centralized Protocols
-- [Messagig Protocol Comparison Wihte Paper](http://www.prismtech.com/download-documents/1408) carries out the survey even ferther
-- Establishing a tustable "truth" an a ppeer to peer environment is described in the [Bit Coin Paper](http://grothoff.org/christian/teaching/2014/2194/bitcoin.pdf)
+- [Messagig Protocol Comparison White Paper](http://www.prismtech.com/download-documents/1408) carries out the survey even further
+
+The second group focuses on distributed peer to peer networks which already
+solved some of the elemental problems our protocol is also facing
+
+- Establishing a trustable "truth" in a peer to peer environment is described in the [Bit Coin Paper](http://grothoff.org/christian/teaching/2014/2194/bitcoin.pdf)
 - Ensuring Information is correct and non-expired is addressed in [GNS](https://gnunet.org/book/export/html/1802)
 - [Timely & Relibale Delivery](http://www.discover.uottawa.ca/publications/files/HDSP-FuturePlay05.pdf) in P2P networks
 
@@ -105,4 +130,3 @@ Timeline:
 - CW 24: Stasatus Report (Deliverable 2)
 - CW 25 - 28: Development (Deliverable 3)
 - CW 29: Final Presentation & Documentation (Deliverable 4)
-
