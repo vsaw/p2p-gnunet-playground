@@ -1,2 +1,12 @@
 .vagrant
 *.html
+
+# gnunet sources and dpendencies
+gnunet-*
+gnurl-*
+gnutls-*
+libav-*
+libgcrypt-*
+libmicrohttpd-*
+libgpg-error-*
+libextractor-*
