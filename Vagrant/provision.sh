@@ -41,7 +41,7 @@ fi
 
 if [[ $1 != "--no-apt" ]]; then
 	sudo apt-get update --yes
-	sudo apt-get upgrade --yes
+	# sudo apt-get upgrade --yes
 
 	# First som utils we will need later on
 	sudo apt-get install --yes adduser
@@ -106,7 +106,7 @@ if [[ $1 != "--no-apt" ]]; then
 fi
 
 # Install deps from source
-if [[ ! -f libextractor-1.3.tar.gz ]]; then
+if [[ ! -d libextractor-1.3 ]]; then
 	wget http://ftp.gnu.org/gnu/libextractor/libextractor-1.3.tar.gz
 	tar xvf libextractor-1.3.tar.gz
 	cd libextractor-1.3
@@ -115,7 +115,7 @@ if [[ ! -f libextractor-1.3.tar.gz ]]; then
 	sudo make install
 	cd ..
 fi
-if [[ ! -f libav-9.10.tar.xz ]]; then
+if [[ ! -d libav-9.10 ]]; then
 	wget https://libav.org/releases/libav-9.10.tar.xz
 	tar xvf libav-9.10.tar.xz
 	cd libav-9.10
@@ -124,7 +124,7 @@ if [[ ! -f libav-9.10.tar.xz ]]; then
 	sudo make install
 	cd ..
 fi
-if [[ ! -f libgpg-error-1.12.tar.bz2 ]]; then
+if [[ ! -d libgpg-error-1.12 ]]; then
 	wget ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.12.tar.bz2
 	tar xvf libgpg-error-1.12.tar.bz2
 	cd libgpg-error-1.12
@@ -133,7 +133,7 @@ if [[ ! -f libgpg-error-1.12.tar.bz2 ]]; then
 	sudo make install
 	cd ..
 fi
-if [[ ! -f libgcrypt-1.6.0.tar.bz2 ]]; then
+if [[ ! -d libgcrypt-1.6.0 ]]; then
 	wget ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.6.0.tar.bz2
 	tar xvf libgcrypt-1.6.0.tar.bz2
 	cd libgcrypt-1.6.0
@@ -142,7 +142,7 @@ if [[ ! -f libgcrypt-1.6.0.tar.bz2 ]]; then
 	sudo make install
 	cd ..
 fi
-if [[ ! -f gnutls-3.2.7.tar.xz ]]; then
+if [[ ! -d gnutls-3.2.7 ]]; then
 	wget ftp://ftp.gnutls.org/gcrypt/gnutls/v3.2/gnutls-3.2.7.tar.xz
 	tar xvf gnutls-3.2.7.tar.xz
 	cd gnutls-3.2.7
@@ -151,7 +151,7 @@ if [[ ! -f gnutls-3.2.7.tar.xz ]]; then
 	sudo make install
 	cd ..
 fi
-if [[ ! -f libmicrohttpd-0.9.33.tar.gz ]]; then
+if [[ ! -d libmicrohttpd-0.9.33 ]]; then
 	wget http://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.33.tar.gz
 	tar xvf libmicrohttpd-0.9.33.tar.gz
 	cd libmicrohttpd-0.9.33
@@ -160,7 +160,7 @@ if [[ ! -f libmicrohttpd-0.9.33.tar.gz ]]; then
 	sudo make install
 	cd ..
 fi
-if [[ ! -f gnurl-7.34.0.tar.bz2 ]]; then
+if [[ ! -d gnurl-7.34.0 ]]; then
 	wget https://gnunet.org/sites/default/files/gnurl-7.34.0.tar.bz2
 	tar xvf gnurl-7.34.0.tar.bz2
 	cd gnurl-7.34.0
@@ -177,7 +177,7 @@ if [[ -z $(grep gnunet: /etc/passwd) ]]; then
 fi
 
 # Finally install GNUnet
-if [[ ! -f gnunet-0.10.1.tar.gz ]]; then
+if [[ ! -d gnunet-0.10.1 ]]; then
 	wget http://ftpmirror.gnu.org/gnunet/gnunet-0.10.1.tar.gz
 	tar xvf gnunet-0.10.1.tar.gz
 	cd gnunet-0.10.1
@@ -204,4 +204,9 @@ sudo -u vagrant bash -c "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib;
 if [[ ! -f /etc/gnunet.conf ]]; then
 	gnunet-gns-import.sh
 	gnunet-gns-proxy-setup-ca
+fi
+
+# export GNUNET_PRREFIX for vagrant user
+if ! grep -q GNUNET_PREFIX "/home/vagrant/.bashrc"; then
+   echo "export GNUNET_PREFIX=/usr/local" | sudo tee -a /home/vagrant/.bashrc
 fi
