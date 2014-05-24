@@ -94,6 +94,11 @@ if [[ $1 != "--no-apt" ]]; then
 	sudo apt-get install --yes libfuse-dev
 	sudo apt-get install --yes libbluetooth-dev
 
+	# To install GDB the correct version of libpython has to be installed
+	# manually first. Otherwise apt can not resolve the dependancies
+	sudo apt-get install --yes libpython2.7=2.7.6-8
+	sudo apt-get install --yes gdb
+
 	# Install testing libraries
 	sudo apt-get install -t unstable --yes nettle-dev
 	sudo apt-get install -t unstable --yes libgstreamer1.0-dev
