@@ -43,153 +43,216 @@ if [[ $1 != "--no-apt" ]]; then
 	sudo apt-get update --yes
 	# sudo apt-get upgrade --yes
 
-	# First som utils we will need later on
-	sudo apt-get install --yes adduser
-	sudo apt-get install --yes subversion
+	if ! which svn >/dev/null; then
+		# First som utils we will need later on
+		sudo apt-get install --yes adduser
+		sudo apt-get install --yes subversion
+	fi
 
-	# Now install the dependancies
-	sudo apt-get install --yes gcc
-	sudo apt-get install --yes make
-	sudo apt-get install --yes python-zbar
-	sudo apt-get install --yes libltdl-dev
-	sudo apt-get install --yes libsqlite3-dev
-	sudo apt-get install --yes libunistring-dev
-	sudo apt-get install --yes libopus-dev
-	sudo apt-get install --yes libpulse-dev
-	sudo apt-get install --yes openssl
-	sudo apt-get install --yes libglpk-dev
-	sudo apt-get install --yes texlive
-	sudo apt-get install --yes libidn11-dev
-	sudo apt-get install --yes libmysqlclient-dev
-	sudo apt-get install --yes libpq-dev
-	sudo apt-get install --yes libarchive-dev
-	sudo apt-get install --yes libbz2-dev
-	sudo apt-get install --yes libexiv2-dev
-	sudo apt-get install --yes libflac-dev
-	sudo apt-get install --yes libgif-dev
-	sudo apt-get install --yes libglib2.0-dev
-	sudo apt-get install --yes libgtk-3-dev
-	sudo apt-get install --yes libmagic-dev
-	sudo apt-get install --yes libjpeg8-dev
-	sudo apt-get install --yes libmpeg2-4-dev
-	sudo apt-get install --yes libmp4v2-dev
-	sudo apt-get install --yes librpm-dev
-	sudo apt-get install --yes libsmf-dev
-	sudo apt-get install --yes libtidy-dev
-	sudo apt-get install --yes libtiff5-dev
-	sudo apt-get install --yes libvorbis-dev
-	sudo apt-get install --yes libogg-dev
-	sudo apt-get install --yes zlib1g-dev
-	sudo apt-get install --yes g++
-	sudo apt-get install --yes gettext
-	sudo apt-get install --yes libgsf-1-dev
-	sudo apt-get install --yes libunbound-dev
-	sudo apt-get install --yes libqrencode-dev
-	sudo apt-get install --yes libgladeui-dev
-	sudo apt-get install --yes nasm
-	sudo apt-get install --yes texlive-latex-extra
-	sudo apt-get install --yes libunique-3.0-dev
-	sudo apt-get install --yes gawk
-	sudo apt-get install --yes miniupnpc
-	sudo apt-get install --yes libfuse-dev
-	sudo apt-get install --yes libbluetooth-dev
+	if ! which gnunet-arm >/dev/null; 
+	then
+		# Now install the dependancies
+		sudo apt-get install --yes gcc
+		sudo apt-get install --yes make
+		sudo apt-get install --yes python-zbar
+		sudo apt-get install --yes libltdl-dev
+		sudo apt-get install --yes libsqlite3-dev
+		sudo apt-get install --yes libunistring-dev
+		sudo apt-get install --yes libopus-dev
+		sudo apt-get install --yes libpulse-dev
+		sudo apt-get install --yes openssl
+		sudo apt-get install --yes libglpk-dev
+		sudo apt-get install --yes texlive
+		sudo apt-get install --yes libidn11-dev
+		sudo apt-get install --yes libmysqlclient-dev
+		sudo apt-get install --yes libpq-dev
+		sudo apt-get install --yes libarchive-dev
+		sudo apt-get install --yes libbz2-dev
+		sudo apt-get install --yes libexiv2-dev
+		sudo apt-get install --yes libflac-dev
+		sudo apt-get install --yes libgif-dev
+		sudo apt-get install --yes libglib2.0-dev
+		sudo apt-get install --yes libgtk-3-dev
+		sudo apt-get install --yes libmagic-dev
+		sudo apt-get install --yes libjpeg8-dev
+		sudo apt-get install --yes libmpeg2-4-dev
+		sudo apt-get install --yes libmp4v2-dev
+		sudo apt-get install --yes librpm-dev
+		sudo apt-get install --yes libsmf-dev
+		sudo apt-get install --yes libtidy-dev
+		sudo apt-get install --yes libtiff5-dev
+		sudo apt-get install --yes libvorbis-dev
+		sudo apt-get install --yes libogg-dev
+		sudo apt-get install --yes zlib1g-dev
+		sudo apt-get install --yes g++
+		sudo apt-get install --yes gettext
+		sudo apt-get install --yes libgsf-1-dev
+		sudo apt-get install --yes libunbound-dev
+		sudo apt-get install --yes libqrencode-dev
+		sudo apt-get install --yes libgladeui-dev
+		sudo apt-get install --yes nasm
+		sudo apt-get install --yes texlive-latex-extra
+		sudo apt-get install --yes libunique-3.0-dev
+		sudo apt-get install --yes gawk
+		sudo apt-get install --yes miniupnpc
+		sudo apt-get install --yes libfuse-dev
+		sudo apt-get install --yes libbluetooth-dev
 
-	# To install GDB the correct version of libpython has to be installed
-	# manually first. Otherwise apt can not resolve the dependancies
-	sudo apt-get install --yes libpython2.7=2.7.6-8
-	sudo apt-get install --yes gdb
+		# Install testing libraries
+		sudo apt-get install -t unstable --yes nettle-dev
+		sudo apt-get install -t unstable --yes libgstreamer1.0-dev
+		sudo apt-get install -t unstable --yes gstreamer1.0-plugins-base
+		sudo apt-get install -t unstable --yes gstreamer1.0-plugins-good
+		sudo apt-get install -t unstable --yes libgstreamer-plugins-base1.0-dev
+	else
+		echo 'gnunet-arm already installed, skipping apt installs...'
+	fi
 
-	# Install testing libraries
-	sudo apt-get install -t unstable --yes nettle-dev
-	sudo apt-get install -t unstable --yes libgstreamer1.0-dev
-	sudo apt-get install -t unstable --yes gstreamer1.0-plugins-base
-	sudo apt-get install -t unstable --yes gstreamer1.0-plugins-good
-	sudo apt-get install -t unstable --yes libgstreamer-plugins-base1.0-dev
+	if ! which gdb >/dev/null; 
+	then
+		# To install GDB the correct version of libpython has to be installed
+		# manually first. Otherwise apt can not resolve the dependancies
+		sudo apt-get install --yes libpython2.7=2.7.6-8
+		sudo apt-get install --yes gdb
+	else
+		echo 'skipping gdb ...'
+	fi
 
 	# Some clean up
 	sudo apt-get autoremove --yes
 fi
 
 # Install deps from source
-if [[ ! -d libextractor-1.3 ]]; then
+
+mkdir -p /vagrant/res
+
+if [[ ! -d /vagrant/res/libextractor ]]; 
+then
+	cd /vagrant/res
 	wget http://ftp.gnu.org/gnu/libextractor/libextractor-1.3.tar.gz
 	tar xvf libextractor-1.3.tar.gz
-	cd libextractor-1.3
+	rm libextractor-1.3.tar.gz
+	mv libextractor-1.3 libextractor
+	cd libextractor
 	./configure
 	make
 	sudo make install
-	cd ..
+else
+	echo 'skipping libextractor ...'
 fi
-if [[ ! -d libav-9.10 ]]; then
+
+if [[ ! -d /vagrant/res/libav ]]; 
+then
+	cd /vagrant/res
 	wget https://libav.org/releases/libav-9.10.tar.xz
 	tar xvf libav-9.10.tar.xz
-	cd libav-9.10
+	rm libav-9.10.tar.xz
+	wv libav-9.10 libav
+	cd libav
 	./configure --enable-shared
 	make
 	sudo make install
-	cd ..
+else
+	echo 'skipping libav ...'
 fi
-if [[ ! -d libgpg-error-1.12 ]]; then
+
+if [[ ! -d /vagrant/res/libgpg-error ]]; 
+then
+	cd /vagrant/res
 	wget ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.12.tar.bz2
 	tar xvf libgpg-error-1.12.tar.bz2
-	cd libgpg-error-1.12
+	rm libgpg-error-1.12.tar.bz2
+	mv libgpg-error-1.12 libgpg-error
+	cd libgpg-error
 	./configure
 	make
 	sudo make install
-	cd ..
+else
+	echo 'skipping libgpg-error ...'
 fi
-if [[ ! -d libgcrypt-1.6.0 ]]; then
+
+if [[ ! -d /vagrant/res/libgcrypt ]]; 
+then
+	cd /vagrant/res
 	wget ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.6.0.tar.bz2
 	tar xvf libgcrypt-1.6.0.tar.bz2
-	cd libgcrypt-1.6.0
+	rm libgcrypt-1.6.0.tar.bz2
+	mv libgcrypt-1.6.0 libgcrypt
+	cd libgcrypt
 	./configure --with-gpg-error-prefix=/usr/local
 	make
 	sudo make install
-	cd ..
+else
+	echo 'skipping libgcypt ...'
 fi
-if [[ ! -d gnutls-3.2.7 ]]; then
+
+if [[ ! -d /vagrant/res/gnutls ]]; 
+then
+	cd /vagrant/res
 	wget ftp://ftp.gnutls.org/gcrypt/gnutls/v3.2/gnutls-3.2.7.tar.xz
 	tar xvf gnutls-3.2.7.tar.xz
-	cd gnutls-3.2.7
+	rm gnutls-3.2.7.tar.xz
+	mv gnutls-3.2.7 gnutls
+	cd gnutls
 	./configure
 	make
 	sudo make install
-	cd ..
+else
+	echo 'skipping gnutls ...'
 fi
-if [[ ! -d libmicrohttpd-0.9.33 ]]; then
+
+if [[ ! -d /vagrant/res/libmicrohttpd ]]; 
+then
+	cd /vagrant/res
 	wget http://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.33.tar.gz
 	tar xvf libmicrohttpd-0.9.33.tar.gz
-	cd libmicrohttpd-0.9.33
+	rm libmicrohttpd-0.9.33.tar.gz
+	mv libmicrohttpd-0.9.33 libmicrohttpd
+	cd libmicrohttpd
 	./configure
 	make
 	sudo make install
-	cd ..
+else
+	echo 'skipping libmicrohttpd ...'
 fi
-if [[ ! -d gnurl-7.34.0 ]]; then
+
+if [[ ! -d /vagrant/res/gnurl ]]; 
+then
+	cd /vagrant/res
 	wget https://gnunet.org/sites/default/files/gnurl-7.34.0.tar.bz2
 	tar xvf gnurl-7.34.0.tar.bz2
-	cd gnurl-7.34.0
+	rm gnurl-7.34.0.tar.bz2
+	mv gnurl-7.34.0 gnurl
+	cd gnurl
 	./configure --enable-ipv6 --with-gnutls=/usr/local --without-libssh2 --without-libmetalink --without-winidn --without-librtmp --without-nghttp2 --without-nss --without-cyassl --without-polarssl --without-ssl --without-winssl --without-darwinssl --disable-sspi --disable-ntlm-wb --disable-ldap --disable-rtsp --disable-dict --disable-telnet --disable-tftp --disable-pop3 --disable-imap --disable-smtp --disable-gopher --disable-file --disable-ftp
 	make
 	sudo make install
-	cd ..
+else
+	echo 'skipping gnurl ...'
 fi
 
 # Add a GNUnet user if not exists
-if [[ -z $(grep gnunet: /etc/passwd) ]]; then
+if [[ -z $(grep gnunet: /etc/passwd) ]]; 
+then
 	sudo adduser --system --shell /bin/bash --home /var/lib/gnunet --group --disabled-password gnunet
 	sudo addgroup --system gnunetdns
 fi
 
 # Finally install GNUnet
-if [[ ! -d gnunet-0.10.1 ]]; then
+if [[ ! -d /vagrant/res/gnunet ]]; 
+then
+	cd /vagrant/res
 	wget http://ftpmirror.gnu.org/gnunet/gnunet-0.10.1.tar.gz
 	tar xvf gnunet-0.10.1.tar.gz
-	cd gnunet-0.10.1
+	rm -rf gnunet-0.10.1.tar.gz
+	mv gnunet-0.10.1 gnunet
+	cd gnunet
 	./configure --with-sudo=sudo --with-nssdir=/lib
 	make
 	sudo make install
 	cd ..
+else 
+	echo 'skipping gnunet ...'
 fi
 
 # Create config if not present
