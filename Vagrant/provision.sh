@@ -147,7 +147,7 @@ then
 	wget https://libav.org/releases/libav-9.10.tar.xz
 	tar xvf libav-9.10.tar.xz
 	rm libav-9.10.tar.xz
-	wv libav-9.10 libav
+	mv libav-9.10 libav
 	cd libav
 	./configure --enable-shared
 	make
