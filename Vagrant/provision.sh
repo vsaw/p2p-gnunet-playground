@@ -112,7 +112,7 @@ if [[ $1 != "--no-apt" ]]; then
 	then
 		# To install GDB the correct version of libpython has to be installed
 		# manually first. Otherwise apt can not resolve the dependancies
-		sudo apt-get install --yes libpython2.7=2.7.6-8
+		sudo apt-get install --yes libpython2.7=2.7.7~rc1-1
 		sudo apt-get install --yes gdb
 	else
 		echo 'skipping gdb ...'
