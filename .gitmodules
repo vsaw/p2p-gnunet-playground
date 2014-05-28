@@ -1,0 +1,8 @@
+[submodule "gnunet-mqtt"]
+	path = gnunet-mqtt
+	url = git@github.com:vsaw/gnunet-mqtt.git
+	branch = master
+[submodule "projects/gnunet-mqtt"]
+	path = projects/gnunet-mqtt
+	url = git@github.com:vsaw/gnunet-mqtt.git
+	branch = master
