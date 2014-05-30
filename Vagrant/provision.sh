@@ -49,6 +49,11 @@ if [[ $1 != "--no-apt" ]]; then
 		sudo apt-get install --yes subversion
 	fi
 
+	if ! which automake >/dev/null; then
+		# Install automake to be able to compile gnunet-mqtt
+		sudo apt-get install --yes automake
+	fi
+
 	if ! which gnunet-arm >/dev/null; 
 	then
 		# Now install the dependancies
