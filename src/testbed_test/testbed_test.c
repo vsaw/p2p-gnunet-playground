@@ -7,7 +7,7 @@
 /**
  * Number of peers we want to start
  */
-#define NUM_PEERS 3
+#define NUM_PEERS 5
 /*----------------------------------------------------------------------------*/
 /**
  * Closure to 'dht_ca' and 'dht_da' DHT adapters.
@@ -21,6 +21,9 @@ struct MyContext {
 /*----------------------------------------------------------------------------*/
 static struct GNUNET_TESTBED_Operation *dht_op;
 static struct GNUNET_DHT_Handle *dht_handle;
+static struct GNUNET_DHT_GetHandle *dht_get_handle;
+static struct GNUNET_HashCode dht_put_key;
+
 static GNUNET_SCHEDULER_TaskIdentifier shutdown_tid;
 /**
  * Global result for testcase.
@@ -49,6 +52,61 @@ shutdown_task(void *cls, const struct GNUNET_SCHEDULER_TaskContext *tc)
 	GNUNET_SCHEDULER_shutdown();
 }
 /*----------------------------------------------------------------------------*/
+
+/**
+ * DHT put start iteration continuation.
+ * GNUNET DHT get will continue running even if some results are found. 
+ * The continuation is called whenever a result is returned.
+ * Params should be clear from naming ad type, for reference check
+ * https://gnunet.org/doxygen/d6/d5a/group__dht.html#ga03ebf65273abcd0046b7c917614c4be7
+ */
+static void
+dht_get_cont (	void *cls, 
+				struct GNUNET_TIME_Absolute exp, 
+				const struct GNUNET_HashCode *key, 
+				const struct GNUNET_PeerIdentity *get_path, 
+				unsigned int get_path_length, 
+				const struct GNUNET_PeerIdentity *put_path, 
+				unsigned int put_path_length, 
+				enum GNUNET_BLOCK_Type type, 
+				size_t size, 
+				const void *data)
+{
+  	printf("data found = %s\n", (char *) data);
+  	printf("%s\n", "Found what we were looking for, cancelling dht get operation...");
+  	GNUNET_DHT_get_stop(dht_get_handle);
+}
+
+
+/**
+ * DHT put continuation, called after the put has successfully sent out.
+ * @param cls some closure (whatever that means..)
+ * @param success GNUNET_OK if the PUT was transmitted, GNUNET_NO on timeout, GNUNET_SYSERR on disconnect from service after the PUT message was transmitted (so we don't know if it was received or not)
+ */
+static void
+dht_put_cont (void *cls,
+              int success)
+{
+	if(success == GNUNET_OK) {
+  		printf("put some secret into the dht =D, the key is %s\n", GNUNET_h2s(&dht_put_key));
+
+
+	  dht_get_handle = GNUNET_DHT_get_start( dht_handle,
+	  						GNUNET_BLOCK_TYPE_TEST,
+	  						&dht_put_key,
+	  						2,
+	  						GNUNET_DHT_RO_NONE,
+	  						NULL,
+	  						0,
+	  						&dht_get_cont,
+	  						NULL);
+	} else if (success == GNUNET_NO) {
+		printf("%s\n", "DHT put timed out =(");
+	} else if (success == GNUNET_SYSERR) {
+		printf("%s\n", "Some crazy stuff happend =((((");
+	}
+}
+
 /**
  * This is where the test logic should be, at least that part of it that uses
  * the DHT of peer "0".
@@ -63,6 +121,10 @@ static void
 service_connect_comp(void *cls, struct GNUNET_TESTBED_Operation *op,
 										 void *ca_result, const char *emsg)
 {
+	char * data = "Some crazy data i put in the GNUNUT DHT! Hell Yeah!";
+	size_t data_size = strlen(data);
+	
+
 	GNUNET_assert(op == dht_op);
 	dht_handle = ca_result;
 	/*
@@ -71,12 +133,27 @@ service_connect_comp(void *cls, struct GNUNET_TESTBED_Operation *op,
 	 *
 	 * for now, just indiscriminately terminate after 10s
 	 */
+
+	GNUNET_DHT_put(dht_handle,
+	 				&dht_put_key, // key
+	 				2, // repl_lvl
+	 				GNUNET_DHT_RO_NONE, // options
+	 				GNUNET_BLOCK_TYPE_TEST , // type
+	 				data_size, // size
+	 				data, // data
+	 				GNUNET_TIME_UNIT_FOREVER_ABS, // expiry
+	 				GNUNET_TIME_relative_multiply(GNUNET_TIME_UNIT_MINUTES, 1), //timeout
+	 				&dht_put_cont, // continuation
+	 				NULL); // closure
+
 	GNUNET_SCHEDULER_cancel(shutdown_tid);
 	shutdown_tid = GNUNET_SCHEDULER_add_delayed(
 			GNUNET_TIME_relative_multiply(GNUNET_TIME_UNIT_SECONDS, 10),
 			&shutdown_task,
 			NULL);
 }
+
+
 /*----------------------------------------------------------------------------*/
 /**
  * Testbed has provided us with the configuration to access one of the peers
@@ -110,7 +187,7 @@ dht_ca(void *cls, const struct GNUNET_CONFIGURATION_Handle *cfg)
 static void
 dht_da(void *cls, void *op_result)
 {
-	struct MyContext *ctxt = cls;
+	// struct MyContext *ctxt = cls;
 	/* Disconnect from DHT service */
 	GNUNET_DHT_disconnect((struct GNUNET_DHT_Handle *)op_result);
 	dht_handle = NULL;

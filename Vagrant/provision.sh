@@ -52,6 +52,8 @@ if [[ $1 != "--no-apt" ]]; then
 	if ! which automake >/dev/null; then
 		# Install automake to be able to compile gnunet-mqtt
 		sudo apt-get install --yes automake
+	else
+		echo 'skipping automake ...'
 	fi
 
 	if ! which gnunet-arm >/dev/null; 
