@@ -254,7 +254,7 @@ then
 	rm -rf gnunet-0.10.1.tar.gz
 	mv gnunet-0.10.1 gnunet
 	cd gnunet
-	./configure --with-sudo=sudo --with-nssdir=/lib
+	./configure --with-sudo=sudo --with-nssdir=/lib --enable-logging=verbose
 	make
 	sudo make install
 	cd ..
@@ -284,4 +284,9 @@ fi
 # export GNUNET_PRREFIX for vagrant user
 if ! grep -q GNUNET_PREFIX "/home/vagrant/.bashrc"; then
    echo "export GNUNET_PREFIX=/usr/local" | sudo tee -a /home/vagrant/.bashrc
+fi
+
+# export GNUNET_LOG for MQTT
+if ! grep -q GNUNET_LOG "/home/vagrant/.bashrc"; then
+	echo 'export GNUNET_LOG="mqtt-api;;;;DEBUG/mqtt;;;;DEBUG"' | sudo tee -a /home/vagrant/.bashrc
 fi
