@@ -6,3 +6,7 @@
 	path = projects/gnunet-mqtt
 	url = git@github.com:vsaw/gnunet-mqtt.git
 	branch = master
+[submodule "projects/gnunet"]
+	path = projects/gnunet
+	url = git@github.com:vsaw/gnunet.git
+	branch = master
