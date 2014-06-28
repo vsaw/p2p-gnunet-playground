@@ -56,7 +56,7 @@ if [[ $1 != "--no-apt" ]]; then
 		echo 'skipping automake ...'
 	fi
 
-	if ! which gnunet-arm >/dev/null; 
+	if ! which gnunet-arm >/dev/null;
 	then
 		# Now install the dependancies
 		sudo apt-get install --yes gcc
@@ -105,6 +105,10 @@ if [[ $1 != "--no-apt" ]]; then
 		sudo apt-get install --yes libfuse-dev
 		sudo apt-get install --yes libbluetooth-dev
 
+		# The following package does not seemed to be signed so one has to force
+		# the inclusion
+		sudo apt-get install --yes --force-yes texi2html
+
 		# Install testing libraries
 		sudo apt-get install -t unstable --yes nettle-dev
 		sudo apt-get install -t unstable --yes libgstreamer1.0-dev
@@ -115,7 +119,7 @@ if [[ $1 != "--no-apt" ]]; then
 		echo 'gnunet-arm already installed, skipping apt installs...'
 	fi
 
-	if ! which gdb >/dev/null; 
+	if ! which gdb >/dev/null;
 	then
 		# To install GDB the correct version of libpython has to be installed
 		# manually first. Otherwise apt can not resolve the dependancies
@@ -133,7 +137,37 @@ fi
 
 mkdir -p /vagrant/res
 
-if [[ ! -d /vagrant/res/libextractor ]]; 
+if [[ ! -d /vagrant/res/indent ]];
+then
+	cd /vagrant/res
+	wget http://ftp.de.debian.org/debian/pool/main/i/indent/indent_2.2.11.orig.tar.gz
+	tar xvf indent_2.2.11.orig.tar.gz
+	rm indent_2.2.11.orig.tar.gz
+	mv indent-2.2.11 indent
+	cd indent
+	# Download the path from mentioned here: https://gnunet.org/gnunetindentation
+	wget https://gnunet.org/svn/gnunet/contrib/lrn-indent.diff
+	patch < lrn-indent.diff -p1
+	./configure
+	make
+	sudo make install
+	# Download the indent file and pre-commit scripts
+	cd /vagrant
+	wget https://gnunet.org/svn/gnunet/.indent.pro
+	wget https://gnunet.org/svn/gnunet/pre-commit -O pre-commit.tmp
+	# The pre-commit script depends on the whitespace trailing script and expects
+	# it to be in the contrib folder, so download this as well and update the
+	# paths
+	wget https://gnunet.org/svn/gnunet/contrib/removetrailingwhitespace
+	chmod 755 removetrailingwhitespace
+	sed "s/contrib\/removetrailingwhitespace/.\/removetrailingwhitespace/" pre-commit.tmp > pre-commit
+	rm pre-commit.tmp
+	chmod 755 pre-commit
+else
+	echo 'skipping indent ...'
+fi
+
+if [[ ! -d /vagrant/res/libextractor ]];
 then
 	cd /vagrant/res
 	wget http://ftp.gnu.org/gnu/libextractor/libextractor-1.3.tar.gz
@@ -148,7 +182,7 @@ else
 	echo 'skipping libextractor ...'
 fi
 
-if [[ ! -d /vagrant/res/libav ]]; 
+if [[ ! -d /vagrant/res/libav ]];
 then
 	cd /vagrant/res
 	wget https://libav.org/releases/libav-9.10.tar.xz
@@ -163,7 +197,7 @@ else
 	echo 'skipping libav ...'
 fi
 
-if [[ ! -d /vagrant/res/libgpg-error ]]; 
+if [[ ! -d /vagrant/res/libgpg-error ]];
 then
 	cd /vagrant/res
 	wget ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.12.tar.bz2
@@ -178,7 +212,7 @@ else
 	echo 'skipping libgpg-error ...'
 fi
 
-if [[ ! -d /vagrant/res/libgcrypt ]]; 
+if [[ ! -d /vagrant/res/libgcrypt ]];
 then
 	cd /vagrant/res
 	wget ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.6.0.tar.bz2
@@ -193,7 +227,7 @@ else
 	echo 'skipping libgcypt ...'
 fi
 
-if [[ ! -d /vagrant/res/gnutls ]]; 
+if [[ ! -d /vagrant/res/gnutls ]];
 then
 	cd /vagrant/res
 	wget ftp://ftp.gnutls.org/gcrypt/gnutls/v3.2/gnutls-3.2.7.tar.xz
@@ -208,7 +242,7 @@ else
 	echo 'skipping gnutls ...'
 fi
 
-if [[ ! -d /vagrant/res/libmicrohttpd ]]; 
+if [[ ! -d /vagrant/res/libmicrohttpd ]];
 then
 	cd /vagrant/res
 	wget http://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.33.tar.gz
@@ -223,7 +257,7 @@ else
 	echo 'skipping libmicrohttpd ...'
 fi
 
-if [[ ! -d /vagrant/res/gnurl ]]; 
+if [[ ! -d /vagrant/res/gnurl ]];
 then
 	cd /vagrant/res
 	wget https://gnunet.org/sites/default/files/gnurl-7.34.0.tar.bz2
@@ -239,14 +273,14 @@ else
 fi
 
 # Add a GNUnet user if not exists
-if [[ -z $(grep gnunet: /etc/passwd) ]]; 
+if [[ -z $(grep gnunet: /etc/passwd) ]];
 then
 	sudo adduser --system --shell /bin/bash --home /var/lib/gnunet --group --disabled-password gnunet
 	sudo addgroup --system gnunetdns
 fi
 
 # Finally install GNUnet
-if [[ ! -d /vagrant/res/gnunet ]]; 
+if [[ ! -d /vagrant/res/gnunet ]];
 then
 	cd /vagrant/res
 	wget http://ftpmirror.gnu.org/gnunet/gnunet-0.10.1.tar.gz
@@ -258,7 +292,7 @@ then
 	make
 	sudo make install
 	cd ..
-else 
+else
 	echo 'skipping gnunet ...'
 fi
 
