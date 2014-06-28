@@ -1,2 +1,8 @@
 .vagrant
 *.html
+
+# Remove the indent stuff, will be automatically generated
+res/indent
+.indent.pro
+pre-commit
+removetrailingwhitespace
