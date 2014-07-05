@@ -304,6 +304,8 @@ if [[ ! -f /etc/gnunet.conf ]]; then
 	echo "USER_ONLY = NO" | sudo tee -a /etc/gnunet.conf
 	sudo adduser vagrant gnunet
 	echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib" | sudo tee -a /home/vagrant/.bashrc
+	# used to find gnunet config by arm, so you don't need to specify -c param
+	echo "export XDG_CONFIG_HOME=/etc/" | sudo tee -a /home/vagrant/.bashrc
 fi
 
 # Start GNUnet
