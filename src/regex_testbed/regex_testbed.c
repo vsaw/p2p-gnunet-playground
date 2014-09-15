@@ -134,27 +134,6 @@ static GNUNET_SCHEDULER_TaskIdentifier shutdown_tid = GNUNET_SCHEDULER_NO_TASK;
 
 
 /**
- * Returns a string containing the hexadecimal representation of mem
- *
- * @param mem The memory to dump
- * @param size the amount of bytes to dump
- *
- * @return A string containing memory as hex, must be freed by caller
- */
-static char *
-memdump (const void *mem, size_t size)
-{
-  char *ret = GNUNET_malloc (2 * size + 1);
-  uint32_t i = 0;
-  for(i = 0; i < size; i++)
-  {
-    snprintf (&ret[2 * i], 2 * (size - i) + 1, "%02X", ((uint8_t *) mem)[i]);
-  }
-  return ret;
-}
-
-
-/**
  * Function run on CTRL-C or shutdown (i.e. success/timeout/etc.).
  * Cleans up.
  */
@@ -225,9 +204,7 @@ subscriber_monitor_get_cb (void *cls,
     const struct GNUNET_PeerIdentity *path,
     const struct GNUNET_HashCode * key)
 {
-  char *key_str = memdump (key, sizeof (struct GNUNET_HashCode));
-  LOG_DEBUG("Subscriber monitor get callback called 0x%s\n", key_str);
-  GNUNET_free (key_str);
+  LOG_DEBUG("Subscriber monitor get callback called %s\n", GNUNET_h2s(key));
 }
 
 
@@ -257,13 +234,10 @@ subscriber_monitor_get_response_cb (void *cls,
     const void *data,
     size_t size)
 {
-  char *key_str = memdump (key, sizeof (struct GNUNET_HashCode));
-  LOG_DEBUG("Subscriber monitor get response callback called 0x%s\n", key_str);
-  GNUNET_free (key_str);
-
-  char *data_str = memdump (data, size);
-  LOG_DEBUG("Subscriber monitor get response data 0x%s\n", data_str);
-  GNUNET_free (data_str);
+  LOG_DEBUG("Subscriber monitor get response callback called %s\n",
+            GNUNET_h2s(key));
+  LOG_DEBUG("Subscriber monitor get response data %s\n",
+            GNUNET_i2s((struct GNUNET_PeerIdentity  *) data));
 }
 
 
@@ -294,13 +268,9 @@ void subscriber_monitor_put_cb (void *cls,
     const void *data,
     size_t size)
 {
-  char *key_str = memdump (key, sizeof (struct GNUNET_HashCode) / 2);
-  LOG_DEBUG("Subscriber monitor put callback called 0x%s\n", key_str);
-  GNUNET_free (key_str);
-
-  char *data_str = memdump (data, size);
-  LOG_DEBUG("Subscriber monitor put data 0x%s\n", data_str);
-  GNUNET_free (data_str);
+  LOG_DEBUG("Subscriber monitor put callback called %s\n", GNUNET_h2s(key));
+  LOG_DEBUG("Subscriber monitor put data %s\n",
+            GNUNET_i2s((struct GNUNET_PeerIdentity *) data));
 
   if (sizeof (struct GNUNET_PeerIdentity) == size)
   {
@@ -328,11 +298,9 @@ subscriber_monitor_state_and_free (void *cls,
     const struct GNUNET_HashCode *key,
     void *value)
 {
-  char *state_string = memdump (key, sizeof (struct GNUNET_HashCode) / 2);
-  LOG_DEBUG ("Subscriber monitoring state %s 0x%s\n", value, state_string);
-  GNUNET_free (state_string);
-  struct Subscriber_Config *sconf = (struct Subscriber_Config *) cls;
+  LOG_DEBUG ("Subscriber monitoring state %s %s\n", value, GNUNET_h2s(key));
 
+  struct Subscriber_Config *sconf = (struct Subscriber_Config *) cls;
   if (NULL == sconf->dht_handle)
   {
     /* Use the provided configuration to connect to the dht */
@@ -469,9 +437,7 @@ subscriber_ca (void *cls, const struct GNUNET_CONFIGURATION_Handle *cfg)
   sconf->cfg = cfg;
   GNUNET_CRYPTO_get_peer_identity(cfg, &sconf->identity);
 
-  char *peer_id_str = memdump (&sconf->identity, sizeof (struct GNUNET_PeerIdentity));
-  LOG_DEBUG("Subscriber peer ID is 0x%s\n", peer_id_str);
-  GNUNET_free (peer_id_str);
+  LOG_DEBUG("Subscriber peer ID is %s\n", GNUNET_i2s(&sconf->identity));
 
   return cls;
 }
@@ -568,18 +534,13 @@ publisher_put_dht_signal(void *cls,
   if (0 != memcmp (&id->public_key, &anon_pkey, sizeof (struct GNUNET_CRYPTO_EddsaPublicKey)))
   {
 #if 0
-    char *peer_string = memdump (id, sizeof (struct GNUNET_PeerIdentity));
-    LOG_ERROR ("Publisher found announcement from 0x%s\n", peer_string);
-    GNUNET_free (peer_string);
+    LOG_ERROR ("Publisher found announcement from %s\n", GNUNET_i2s(id));
 #endif
     // schedule_shutdown_test (0);
     return;
   }
   LOG_DEBUG("Publisher finds anonymous annonucement\n");
-
-  char *key_str = memdump (key, sizeof (struct GNUNET_HashCode) / 2);
-  LOG_DEBUG("Publisher puts signal for key 0x%s\n", key_str);
-  GNUNET_free (key_str);
+  LOG_DEBUG("Publisher puts signal for key %s\n", GNUNET_h2s(key));
 
   if (NULL == pconf->dht_handle)
   {
@@ -663,10 +624,7 @@ publisher_ca (void *cls, const struct GNUNET_CONFIGURATION_Handle *cfg)
   pconf->cfg = cfg;
   GNUNET_CRYPTO_get_peer_identity(cfg, &pconf->identity);
 
-  char *peer_id_str = memdump (&pconf->identity, sizeof (struct GNUNET_PeerIdentity));
-  LOG_DEBUG("Publisher peer ID is 0x%s\n", peer_id_str);
-  GNUNET_free (peer_id_str);
-
+  LOG_DEBUG("Publisher peer ID is %s\n", GNUNET_i2s(&pconf->identity));
   return cls;
 }
 
